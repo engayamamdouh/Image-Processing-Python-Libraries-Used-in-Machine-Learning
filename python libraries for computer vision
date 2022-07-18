@@ -1,0 +1,69 @@
+Image-Processing Python Libraries Used in Machine Learning
+**SciPy
+from scipy import misc,ndimage
+from matplotlib import pyplot as plt
+
+face = misc.face()
+blurred_face = ndimage.gaussian_filter(face, sigma=3)
+
+fig, ax = plt.subplots(1, 2, figsize=(16, 8))
+
+ax[0].imshow(face)
+ax[0].set_title("Original Image")
+ax[0].set_xticks([])
+ax[0].set_yticks([])
+
+
+ax[1].imshow(blurred_face)
+ax[1].set_title("Blurred Image")
+ax[1].set_xticks([])
+ax[1].set_yticks([])
+
+*NumPy
+from PIL import Image
+import numpy as np
+
+im = np.array(Image.open('goku.png'))
+
+im_R = im.copy()
+im_R[:, :, (1, 2)] = 0
+im_G = im.copy()
+im_G[:, :, (0, 2)] = 0
+im_B = im.copy()
+im_B[:, :, (0, 1)] = 0
+
+im_RGB = np.concatenate((im_R, im_G, im_B), axis=1)
+
+pil_img = Image.fromarray(im_RGB)
+pil_img.save('goku.jpg')
+
+*Mahotas
+from pylab import imshow, show
+import mahotas
+import mahotas.demos
+import numpy as np
+
+wally = mahotas.demos.load('Wally')
+wfloat = wally.astype(float)
+
+r,g,b = wfloat.transpose((2,0,1))
+w = wfloat.mean(2)
+pattern = np.ones((24,16), float)
+
+for i in range(2):
+    pattern[i::4] = -1
+    v = mahotas.convolve(r-w, pattern)
+    mask = (v == v.max())
+    mask = mahotas.dilate(mask, np.ones((48,24)))
+    np.subtract(wally, .8*wally * ~mask[:,:,None], out=wally, casting='unsafe')
+imshow(wally)
+show()
+
+*SimpleITK
+*Pgmagick
+from pgmagick.api import Image 
+
+img = Image('leena.jpeg') 
+
+# blur image 
+img.blur(10, 5)
